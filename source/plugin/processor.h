@@ -10,7 +10,7 @@ namespace psybass {
 
         // create function
         static Steinberg::FUnknown* createInstance(void*) {
-            return  (Steinberg::Vst::IAudioProcessor*)new PsyBassProcessor;
+            return  static_cast<Steinberg::Vst::IAudioProcessor*>(new PsyBassProcessor);
         }
 
         //--- ---------------------------------------------------------------------

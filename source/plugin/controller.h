@@ -10,7 +10,7 @@ namespace psybass {
 
         // create function 
         static Steinberg::FUnknown* createInstance(void*) {
-            return (Steinberg::Vst::IEditController*) new PsyBassController;
+            return static_cast<Steinberg::Vst::IEditController*>(new PsyBassController);
         }
 
         // IPluginBase
