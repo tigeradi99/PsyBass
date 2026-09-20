@@ -45,7 +45,7 @@ namespace psybass {
     }
 
     Steinberg::tresult PsyBassProcessor::setupProcessing(Steinberg::Vst::ProcessSetup &newSetup) {
-        mOscillator.setSampleRate(newSetup.sampleRate);
+        mEngine.setSampleRate(newSetup.sampleRate);
         return AudioEffect::setupProcessing(newSetup);
     }
 
@@ -73,15 +73,11 @@ namespace psybass {
                     }
 
                     switch (paramQueue->getParameterId()) {
-                        case kBypassID:
-                            //something
+                        case kBypassId:
+                            mGate = value >= 0.5;
                             break;
 
-                        case kParamVolId:
-                            //something
-                            break;
-
-                        case kParamOnId:
+                        case kGlobalMasterVolumeId:
                             //something
                             break;
                     }
@@ -98,15 +94,11 @@ namespace psybass {
                 Steinberg::Vst::Event event{};
                 if (events->getEvent(i, event) == Steinberg::kResultOk) {
                     switch (event.type) {
-                        case Steinberg::Vst::Event::kNoteOnEvent: {
-                            double fFrequency = 440.0f * powf(2.0f,
-                                static_cast<float>(event.noteOn.pitch - 69)/12.0f);
-                            mOscillator.setFrequency(fFrequency);
-                            mGate = true;
+                        case Steinberg::Vst::Event::kNoteOnEvent:
+                            mEngine.noteOn(event.noteOn.pitch, event.noteOn.velocity);
                             break;
-                        }
                         case Steinberg::Vst::Event::kNoteOffEvent:
-                            mGate = false;
+                            mEngine.noteOff(event.noteOff.pitch);
                             break;
                     }
                 }
@@ -131,12 +123,7 @@ namespace psybass {
             return Steinberg::kResultOk;
         }
 
-        for (int i = 0; i < data.numSamples; ++i) {
-            const float sample = mGate ? mOscillator.process() : 0.0f;
-
-            outL[i] = sample;
-            outR[i] = sample;
-        }
+        mEngine.process(outL, outR, data.numSamples);
 
         return Steinberg::kResultOk;
     }

@@ -4,6 +4,7 @@
 
 #include "plugin/controller.h"
 #include "plugin/psybass_cids.h"
+#include "plugin/params.h"
 
 #include "pluginterfaces/base/ibstream.h"
 
@@ -17,6 +18,21 @@ namespace psybass {
         }
 
         // Create parameters
+        parameters.addParameter(
+            STR16("Bypass"),
+            nullptr,
+            1,
+            0,
+            Steinberg::Vst::ParameterInfo::kCanAutomate | Steinberg::Vst::ParameterInfo::kIsBypass,
+            kBypassId);
+
+        parameters.addParameter(
+            STR16("Master Volume"),
+            STR16(""),
+            0,
+            1.0,
+            Steinberg::Vst::ParameterInfo::kCanAutomate,
+            kGlobalMasterVolumeId);
 
         return Steinberg::kResultOk;
     }

@@ -33,8 +33,12 @@ smtg_add_vst3plugin(PsyBass
         source/plugin/params.h
         source/plugin/version.h
         source/plugin/psybass_entry.cpp
-        source/dsp/oscillator.cpp
         source/dsp/oscillator.hpp
+        source/dsp/oscillator.cpp
+        source/dsp/voice.h
+        source/dsp/voice.cpp
+        source/dsp/engine.hpp
+        source/dsp/engine.cpp
 )
 
 target_include_directories(PsyBass

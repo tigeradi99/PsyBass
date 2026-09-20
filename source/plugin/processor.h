@@ -1,7 +1,8 @@
 #pragma once
 
 #include "public.sdk/source/vst/vstaudioeffect.h"
-#include "dsp/oscillator.hpp"
+
+#include "dsp/engine.hpp"
 
 namespace psybass {
     class PsyBassProcessor: public Steinberg::Vst::AudioEffect {
@@ -46,7 +47,7 @@ namespace psybass {
 
         private:
         // Create engine here
-        dsp::Oscillator mOscillator;
+        dsp::SynthEngine mEngine;
         bool mGate = false;
     };
 }
