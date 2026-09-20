@@ -41,13 +41,10 @@ namespace psybass {
         Steinberg::tresult PLUGIN_API getState (Steinberg::IBStream* state) SMTG_OVERRIDE;
 
         protected:
-        Steinberg::Vst::ParamValue mParam1 = 0;
-        int16_t mParam2 = 0;
         bool mBypass = false;
 
         private:
         // Create engine here
         dsp::SynthEngine mEngine;
-        bool mGate = false;
     };
 }

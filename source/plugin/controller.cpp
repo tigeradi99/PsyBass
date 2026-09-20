@@ -6,6 +6,7 @@
 #include "plugin/psybass_cids.h"
 #include "plugin/params.h"
 
+#include "base/source/fstreamer.h"
 #include "pluginterfaces/base/ibstream.h"
 
 
@@ -42,7 +43,20 @@ namespace psybass {
     }
 
     Steinberg::tresult PsyBassController::setComponentState(Steinberg::IBStream *state) {
-        return EditControllerEx1::setComponentState(state);
+        if (!state) {
+            return Steinberg::kInvalidArgument;
+        }
+
+        Steinberg::IBStreamer streamer(state, kLittleEndian);
+        bool bypass = false;
+
+        if (!streamer.readBool(bypass)) {
+            return Steinberg::kResultFalse;
+        }
+
+        setParamNormalized(kBypassId, bypass ? 1.0 : 0.0);
+
+        return Steinberg::kResultOk;
     }
 
     Steinberg::IPlugView * PsyBassController::createView(Steinberg::FIDString name) {

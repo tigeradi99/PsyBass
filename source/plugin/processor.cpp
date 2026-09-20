@@ -9,8 +9,6 @@
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 
-#include <algorithm>
-
 #include "pluginterfaces/vst/ivstevents.h"
 
 
@@ -74,7 +72,7 @@ namespace psybass {
 
                     switch (paramQueue->getParameterId()) {
                         case kBypassId:
-                            mGate = value >= 0.5;
+                            mBypass = value >= 0.5;
                             break;
 
                         case kGlobalMasterVolumeId:
@@ -123,16 +121,36 @@ namespace psybass {
             return Steinberg::kResultOk;
         }
 
+        if (mBypass) {
+            for (Steinberg::int32 i = 0; i < data.numSamples; i++) {
+                outL[i] = 0.0f;
+                outR[i] = 0.0f;
+            }
+            return Steinberg::kResultOk;
+        }
+
         mEngine.process(outL, outR, data.numSamples);
 
         return Steinberg::kResultOk;
     }
 
     Steinberg::tresult PsyBassProcessor::setState(Steinberg::IBStream *state) {
-        return AudioEffect::setState(state);
+        Steinberg::IBStreamer streamer(state, kLittleEndian);
+        bool bypass = false;
+
+        if (!streamer.readBool(bypass))
+            return Steinberg::kResultFalse;
+
+        mBypass = bypass;
+        return Steinberg::kResultOk;
     }
 
     Steinberg::tresult PsyBassProcessor::getState(Steinberg::IBStream *state) {
-        return AudioEffect::getState(state);
+        Steinberg::IBStreamer streamer(state, kLittleEndian);
+
+        if (!streamer.writeBool(mBypass))
+            return Steinberg::kResultFalse;
+
+        return Steinberg::kResultOk;
     }
 }
