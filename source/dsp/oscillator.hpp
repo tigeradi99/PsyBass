@@ -17,7 +17,8 @@ namespace dsp {
         void setFrequency(double frequency);
         void setMode(OscillatorMode mode);
         void setSampleRate(double sampleRate);
-        void generate(double* buffer, int n_samples);
+        void generate(float* buffer, int n_samples);
+        float process();
 
     private:
         OscillatorMode m_oscillatorMode;

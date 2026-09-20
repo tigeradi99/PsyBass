@@ -25,13 +25,16 @@ add_subdirectory(${vst3SDK_SRC_DIR} ${PROJECT_BINARY_DIR}/vst3sdk)
 smtg_enable_vst3_sdk()
 
 smtg_add_vst3plugin(PsyBass
-    source/plugin/controller.h
-    source/plugin/controller.cpp
-    source/plugin/processor.h
-    source/plugin/processor.cpp
-    source/plugin/psybass_cids.h
-    source/plugin/version.h
-    source/plugin/psybass_entry.cpp
+        source/plugin/controller.h
+        source/plugin/controller.cpp
+        source/plugin/processor.h
+        source/plugin/processor.cpp
+        source/plugin/psybass_cids.h
+        source/plugin/params.h
+        source/plugin/version.h
+        source/plugin/psybass_entry.cpp
+        source/dsp/oscillator.cpp
+        source/dsp/oscillator.hpp
 )
 
 target_include_directories(PsyBass
