@@ -17,7 +17,6 @@ namespace dsp {
         void setFrequency(double frequency);
         void setMode(OscillatorMode mode);
         void setSampleRate(double sampleRate);
-        float process();
         double nextSample();
 
     private:
@@ -35,6 +34,9 @@ namespace dsp {
 
         void updateIncrement();
 
-        double generateSine();
+        void updatePhase();
+
+        [[nodiscard]]
+        double generateSine() const;
     };
 }
