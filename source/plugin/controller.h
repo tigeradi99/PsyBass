@@ -2,8 +2,10 @@
 
 #include "public.sdk/source/vst/vsteditcontroller.h"
 
+#include "vstgui/plugin-bindings/vst3editor.h"
+
 namespace psybass {
-    class PsyBassController: public Steinberg::Vst::EditControllerEx1 {
+    class PsyBassController: public Steinberg::Vst::EditControllerEx1, public VSTGUI::VST3EditorDelegate {
         public:
         PsyBassController() = default;
         ~PsyBassController() SMTG_OVERRIDE = default;

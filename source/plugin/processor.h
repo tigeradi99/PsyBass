@@ -42,6 +42,7 @@ namespace psybass {
 
         protected:
         bool mBypass = false;
+        Steinberg::Vst::ParamValue mOsc1Waveform = 0.0;
 
         private:
         // Create engine here

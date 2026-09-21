@@ -15,8 +15,9 @@ endif()
 # Steinberg SDK settings
 set(SMTG_ENABLE_VST3_PLUGIN_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(SMTG_ENABLE_VST3_HOSTING_EXAMPLES OFF CACHE BOOL "" FORCE)
-# No Steinberg VSTGUI for now
-set(SMTG_ENABLE_VSTGUI_SUPPORT OFF CACHE BOOL "" FORCE)
+# Turn on Steinberg VSTGUI
+set(SMTG_ENABLE_VSTGUI_SUPPORT ON CACHE BOOL "" FORCE)
+# Disable Linux Wayland
 set(SMTG_ENABLE_WAYLAND_SUPPORT OFF CACHE BOOL "" FORCE)
 
 set(vst3SDK_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/vst3sdk" )
@@ -46,6 +47,11 @@ target_include_directories(PsyBass
         ${CMAKE_CURRENT_SOURCE_DIR}/source
 )
 
-target_link_libraries(PsyBass PRIVATE sdk)
+target_link_libraries(PsyBass PRIVATE sdk vstgui_support)
+
+smtg_target_add_plugin_resources(PsyBass
+        RESOURCES
+        "resource/psybass.uidesc"
+)
 
 smtg_target_configure_version_file(PsyBass)

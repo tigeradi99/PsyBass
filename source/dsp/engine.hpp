@@ -15,6 +15,7 @@ namespace dsp {
         void noteOn(int note, float velocity);
         void noteOff(int note);
 
+        void setOscillatorMode(OscillatorMode mode);
         void process(float* left, float* right, int numSamples);
 
     private:

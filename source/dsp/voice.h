@@ -17,6 +17,7 @@ namespace dsp {
         void noteOn(int midiNote, float velocity);
         void noteOff(int note);
 
+        void setOscillatorMode(OscillatorMode mode);
         float processSample();
 
     private:

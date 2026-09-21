@@ -26,6 +26,10 @@ namespace dsp {
         m_active = false;
     }
 
+    void Voice::setOscillatorMode(const OscillatorMode mode) {
+        m_oscillator.setMode(mode);
+    }
+
     float Voice::processSample() {
         if (!m_active)
             return 0.0f;

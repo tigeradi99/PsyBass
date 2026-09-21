@@ -7,7 +7,11 @@
 
 namespace dsp {
     enum OscillatorMode {
-        OSCILLATOR_MODE_SINE,
+        OSCILLATOR_MODE_SINE = 0,
+        OSCILLATOR_MODE_SQUARE,
+        OSCILLATOR_MODE_SAW,
+
+        COUNT
     };
 
     class Oscillator {
@@ -18,6 +22,9 @@ namespace dsp {
         void setMode(OscillatorMode mode);
         void setSampleRate(double sampleRate);
         double nextSample();
+
+        // Utility method
+        static double polyBLEP(double phase, double phaseIncrement);
 
     private:
         OscillatorMode m_oscillatorMode;
@@ -33,10 +40,10 @@ namespace dsp {
         double m_phaseIncrement;
 
         void updateIncrement();
-
         void updatePhase();
 
-        [[nodiscard]]
-        double generateSine() const;
+        [[nodiscard]] double generateSine() const;
+        [[nodiscard]] double generateSawBLEP() const;
+        [[nodiscard]] double generateSquareBLEP() const;
     };
 }

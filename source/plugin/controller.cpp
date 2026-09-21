@@ -8,6 +8,10 @@
 
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/base/ibstream.h"
+#include "pluginterfaces/vst/ivstplugview.h"
+#include "vstgui/plugin-bindings/vst3editor.h"
+
+#include <cstring>
 
 
 namespace psybass {
@@ -35,6 +39,15 @@ namespace psybass {
             Steinberg::Vst::ParameterInfo::kCanAutomate,
             kGlobalMasterVolumeId);
 
+        auto* osc1Waveform = new Steinberg::Vst::StringListParameter(
+                STR16("Osc1 Waveform"),
+                kOsc1ModeId
+            );
+        osc1Waveform->appendString(STR16("Sine"));
+        osc1Waveform->appendString(STR16("Square"));
+        osc1Waveform->appendString(STR16("Saw"));
+        parameters.addParameter(osc1Waveform);
+
         return Steinberg::kResultOk;
     }
 
@@ -49,18 +62,31 @@ namespace psybass {
 
         Steinberg::IBStreamer streamer(state, kLittleEndian);
         bool bypass = false;
+        double osc1Waveform = 0.0;
 
         if (!streamer.readBool(bypass)) {
             return Steinberg::kResultFalse;
         }
+        if (!streamer.readDouble(osc1Waveform)) {
+            return Steinberg::kResultFalse;
+        }
 
         setParamNormalized(kBypassId, bypass ? 1.0 : 0.0);
+        setParamNormalized(kOsc1ModeId, osc1Waveform);
 
         return Steinberg::kResultOk;
     }
 
     Steinberg::IPlugView * PsyBassController::createView(Steinberg::FIDString name) {
-        return EditControllerEx1::createView(name);
+        if (name && std::strcmp(name, Steinberg::Vst::ViewType::kEditor) == 0) {
+            return new VSTGUI::VST3Editor(
+                this,
+                "view",
+                "psybass.uidesc"
+                );
+        }
+
+        return nullptr;
     }
 
     Steinberg::tresult PsyBassController::setState(Steinberg::IBStream *state) {

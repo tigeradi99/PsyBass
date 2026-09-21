@@ -19,6 +19,10 @@ namespace dsp {
         m_voice.noteOff(note);
     }
 
+    void SynthEngine::setOscillatorMode(const OscillatorMode mode) {
+        m_voice.setOscillatorMode(mode);
+    }
+
     void SynthEngine::process(float *left, float *right, int numSamples) {
         for (int i = 0; i < numSamples; i++) {
             const float sample =  m_voice.processSample();

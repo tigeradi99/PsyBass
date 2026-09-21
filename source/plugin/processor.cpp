@@ -8,9 +8,9 @@
 
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
-
 #include "pluginterfaces/vst/ivstevents.h"
 
+#include <cmath>
 
 namespace psybass {
     PsyBassProcessor::PsyBassProcessor() {
@@ -78,6 +78,14 @@ namespace psybass {
                         case kGlobalMasterVolumeId:
                             //something
                             break;
+
+                        case kOsc1ModeId: {
+                            mOsc1Waveform = value;
+                            constexpr auto numModes = static_cast<int>(dsp::OscillatorMode::COUNT);
+                            const auto modeIdx = static_cast<int>(std::round(value * (numModes - 1)));
+                            mEngine.setOscillatorMode(static_cast<dsp::OscillatorMode>(modeIdx));
+                            break;
+                        }
                     }
                 }
             }
@@ -137,19 +145,33 @@ namespace psybass {
     Steinberg::tresult PsyBassProcessor::setState(Steinberg::IBStream *state) {
         Steinberg::IBStreamer streamer(state, kLittleEndian);
         bool bypass = false;
+        double osc1Waveform = 0.0;
 
         if (!streamer.readBool(bypass))
             return Steinberg::kResultFalse;
+        if (!streamer.readDouble(osc1Waveform))
+            return Steinberg::kResultFalse;
 
         mBypass = bypass;
+
+        mOsc1Waveform = osc1Waveform;
+        constexpr auto numModes = static_cast<int>(dsp::OscillatorMode::COUNT);
+        const auto modeIdx = static_cast<int>(std::round(osc1Waveform * (numModes - 1)));
+        mEngine.setOscillatorMode(static_cast<dsp::OscillatorMode>(modeIdx));
+
+
         return Steinberg::kResultOk;
     }
 
     Steinberg::tresult PsyBassProcessor::getState(Steinberg::IBStream *state) {
         Steinberg::IBStreamer streamer(state, kLittleEndian);
 
-        if (!streamer.writeBool(mBypass))
+        if (!streamer.writeBool(mBypass)) {
             return Steinberg::kResultFalse;
+        }
+        if (!streamer.writeDouble(mOsc1Waveform)) {
+            return Steinberg::kResultFalse;
+        }
 
         return Steinberg::kResultOk;
     }
